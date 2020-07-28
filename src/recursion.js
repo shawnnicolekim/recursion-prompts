@@ -133,11 +133,26 @@ var reverse = function(string) {
     if (string.length === 1) {
       return string[0];
     }
-    return string[0] + reverse(string.substring(1));
+    return string[string.length - 1] + reverse(string.substring(0, string.length - 1));
 };
 
 // 10. Write a function that determines if a string is a palindrome.
 var palindrome = function(string) {
+    var lowerCase = string.toLowerCase().split(' ').join('');
+
+    if (lowerCase.length === 1) {
+        return true;
+    }
+    
+    if (lowerCase[0] !== lowerCase[lowerCase.length - 1]) {
+        return false;
+    }
+
+    if (lowerCase.length === 2 && lowerCase[0] === lowerCase[1]) {
+        return true;
+    }
+    
+    return palindrome(string.substring(1, string.length - 1));
 };
 
 // 11. Write a function that returns the remainder of x divided by y without using the
@@ -146,16 +161,112 @@ var palindrome = function(string) {
 // modulo(17,5) // 2
 // modulo(22,6) // 4
 var modulo = function(x, y) {
+    var firstNeg = false;
+    var secondNeg = false;
+
+    if (x < 0 && y > 0) {
+        firstNeg = true;
+        x = -x;
+    } 
+
+    if (x > 0 && y < 0) {
+        secondNeg = true;
+        y = -y;
+    }
+
+    if (x < 0 && y < 0) {
+        firstNeg = true;
+        secondNeg = true;
+        x = -x;
+        y = -y;
+    }
+
+    if (x === 0 && y === 0) {
+        return NaN;
+    }
+
+    if (x === y) {
+        return 0;
+    }
+
+    if (y > x) {
+        return (firstNeg || secondNeg) ? -x : x;
+    }
+
+    return (firstNeg || secondNeg) ? -(modulo(x - y, y)) : modulo(x - y, y);
 };
 
 // 12. Write a function that multiplies two numbers without using the * operator or
 // Math methods.
 var multiply = function(x, y) {
+    var firstNeg = false;
+    var secondNeg = false;
+
+    if (x < 0 && y > 0) {
+        firstNeg = true;
+        x = -x;
+    } 
+
+    if (x > 0 && y < 0) {
+        secondNeg = true;
+        y = -y;
+    }
+
+    if (x < 0 && y < 0) {
+        firstNeg = true;
+        secondNeg = true;
+        x = -x;
+        y = -y;
+    }
+
+    if (y === 0 || x === 0) {
+        return 0;
+    }
+
+    if (x === 1 || y === 1) {
+        return ((firstNeg && !secondNeg) || (!firstNeg && secondNeg)) ? (x === 1 ? -y : -x) : (x === 1 ? y : x);
+    }
+
+    return ((firstNeg && !secondNeg) || (!firstNeg && secondNeg)) ? -(x + multiply(x, y - 1)) : x + multiply(x, y - 1);
 };
 
 // 13. Write a function that divides two numbers without using the / operator or
 // Math methods to arrive at an approximate quotient (ignore decimal endings).
 var divide = function(x, y) {
+    var firstNeg = false;
+    var secondNeg = false;
+
+    if (x < 0 && y > 0) {
+        firstNeg = true;
+        x = -x;
+    } 
+
+    if (x > 0 && y < 0) {
+        secondNeg = true;
+        y = -y;
+    }
+
+    if (x < 0 && y < 0) {
+        firstNeg = true;
+        secondNeg = true;
+        x = -x;
+        y = -y;
+    }
+
+    if (x === 0 || y > x) {
+        return 0;
+    }
+
+    if (y === 1) {
+        return ((firstNeg && !secondNeg) || (!firstNeg && secondNeg)) ? -x : x;
+    }
+
+    if (y === 0) {
+        return Infinity;
+    }
+
+    return ((firstNeg && !secondNeg) || (!firstNeg && secondNeg)) ? -(1 + divide(x - y, y)) : 1 + divide(x - y, y)
+
 };
 
 // 14. Find the greatest common divisor (gcd) of two positive numbers. The GCD of two
