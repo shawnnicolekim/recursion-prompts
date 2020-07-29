@@ -253,6 +253,10 @@ var divide = function(x, y) {
         y = -y;
     }
 
+    if (x === 0 && y === 0) {
+        return NaN
+    }
+
     if (x === 0 || y > x) {
         return 0;
     }
@@ -275,28 +279,89 @@ var divide = function(x, y) {
 // http://www.cse.wustl.edu/~kjg/cse131/Notes/Recursion/recursion.html
 // https://www.khanacademy.org/computing/computer-science/cryptography/modarithmetic/a/the-euclidean-algorithm
 var gcd = function(x, y) {
+    if (x === 0) {
+        return y;
+    }
+
+    if (y === 0) {
+        return x;
+    }
+
+    if (x < 0 || y < 0) {
+        return null;
+    }
+
+    var remainder = x % y;
+
+    return gcd(y, remainder);
+
 };
 
 // 15. Write a function that compares each character of two strings and returns true if
 // both are identical.
 // compareStr('house', 'houses') // false
 // compareStr('tomato', 'tomato') // true
+// I: string
+// O: boolean
+// E:
 var compareStr = function(str1, str2) {
+    // compare the first two indexes, if they are not identical, return false
+    if (str1[0] !== str2[0]) {
+      return false;
+    }
+
+    // if both strings are undefined, return true
+    if (str1.length === 0 && str2.length === 0) {
+        return true;
+    }
+
+    // input the next recursion call with the string minus the first index
+    return compareStr(str1.substring(1), str2.substring(1));
 };
 
 // 16. Write a function that accepts a string and creates an array where each letter
 // occupies an index of the array.
+// I: string
+// O: array
+// E: spaces? keep spaces in array
 var createArray = function(str) {
+    var result = [];
+
+    if (str.length === 0) {
+        return [];
+    } else {
+        result.push(str[0]);
+    }
+
+    return result.concat(createArray(str.substring(1)));
 };
 
 // 17. Reverse the order of an array
 var reverseArr = function(array) {
+    var result = [];
+
+    if (array.length === 0) {
+        return [];
+    } else {
+        result.push(array[array.length - 1]);
+    }
+
+    return result.concat(reverseArr(array.slice(0, array.length - 1)));
 };
 
 // 18. Create a new array with a given value and length.
 // buildList(0,5) // [0,0,0,0,0]
 // buildList(7,3) // [7,7,7]
 var buildList = function(value, length) {
+    var result = [];
+
+    if (length === 0) {
+        return [];
+    }
+
+    result.push(value);
+
+    return result.concat(buildList(value, length - 1));
 };
 
 // 19. Implement FizzBuzz. Given integer n, return an array of the string representations of 1 to n.
@@ -305,17 +370,54 @@ var buildList = function(value, length) {
 // For numbers which are multiples of both three and five, output “FizzBuzz” instead of the number.
 // fizzBuzz(5) // ['1','2','Fizz','4','Buzz']
 var fizzBuzz = function(n) {
+    var result = [];
+
+    if (n === 0) {
+        return [];
+    } else if (n % 3 === 0 && n % 5 === 0) {
+        result.push('FizzBuzz');
+    } else if (n % 3 === 0 ) {
+        result.push('Fizz');
+    } else if (n % 5 === 0 ) {
+        result.push('Buzz');
+    } else {
+        result.push(n.toString());
+    }
+
+    return (fizzBuzz(n - 1)).concat(result);
 };
 
 // 20. Count the occurence of a value in a list.
 // countOccurrence([2,7,4,4,1,4], 4) // 3
 // countOccurrence([2,'banana',4,4,1,'banana'], 'banana') // 2
 var countOccurrence = function(array, value) {
+    var counter = 0;
+
+    if (array.length === 0) {
+        return 0;
+    }
+
+    if (value === array[0]) {
+        counter++;
+    }
+
+    return counter + countOccurrence(array.slice(1), value);
 };
 
 // 21. Write a recursive version of map.
 // rMap([1,2,3], timesTwo); // [2,4,6]
 var rMap = function(array, callback) {
+    var result = [];
+
+    if (array.length === 0) {
+        return [];
+    }
+
+    var newElement = callback(array[0]);
+
+    result.push(newElement);
+
+    return result.concat(rMap(array.slice(1), callback));
 };
 
 // 22. Write a function that counts the number of times a key occurs in an object.
@@ -323,6 +425,8 @@ var rMap = function(array, callback) {
 // countKeysInObj(obj, 'r') // 1
 // countKeysInObj(obj, 'e') // 2
 var countKeysInObj = function(obj, key) {
+
+   
 };
 
 // 23. Write a function that counts the number of times a value occurs in an object.
