@@ -426,7 +426,27 @@ var rMap = function(array, callback) {
 // countKeysInObj(obj, 'e') // 2
 var countKeysInObj = function(obj, key) {
 
-   
+  var counter = 0;
+  var objKeys = Object.keys(obj);
+
+  // base case: when you are at the end of the given object and any inner objects
+  if (objKeys.length === 0) {
+      return 0;
+  }
+
+  // if the key equals to the given key, add 1 to the counter
+  if (objKeys[0] === key) {
+      counter++;
+  }
+
+  // if the value is an object, use countKeysInObj on the value and add to current counter, if not, return 0
+  if (typeof obj[objKeys[0]] === 'object') {
+      counter += countKeysInObj(obj[objKeys[0]], key);
+  }
+
+  delete obj[objKeys[0]];
+  return counter + countKeysInObj(obj, key);
+
 };
 
 // 23. Write a function that counts the number of times a value occurs in an object.
@@ -434,11 +454,41 @@ var countKeysInObj = function(obj, key) {
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
 var countValuesInObj = function(obj, value) {
+    var counter = 0;
+    var objValues = Object.values(obj);
+    var objKeys = Object.keys(obj);
+
+    // base case
+    if (objKeys.length === 0) {
+        return 0;
+    }
+
+    if (objValues[0] === value) {
+        counter++;
+    }
+
+    if (typeof objValues[0] === 'object') {
+        counter += countValuesInObj(objValues[0], value);
+    }
+
+    delete obj[objKeys[0]];
+    return counter + countValuesInObj(obj, value);
 };
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
 var replaceKeysInObj = function(obj, oldKey, newKey) {
+
+    for (var key in obj) {
+        if (typeof obj[key] === 'object') {
+            obj[key] = replaceKeysInObj(obj[key], oldKey, newKey);
+        }
+        if (key === oldKey) {
+            obj[newKey] = obj[key];
+            delete obj[oldKey];
+        }
+    }
+    return obj;
 };
 
 // 25. Get the first n Fibonacci numbers. In the Fibonacci sequence, each subsequent
@@ -446,7 +496,25 @@ var replaceKeysInObj = function(obj, oldKey, newKey) {
 // Example: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34.....
 // fibonacci(5); // [0,1,1,2,3,5]
 // Note: The 0 is not counted.
+
+// I: number
+// O: array
+// 0 is not counted in array
 var fibonacci = function(n) {
+
+    if (n === 0 || n < 0) {
+        return null;
+    }
+    
+    if (n === 1) {
+        return [0, 1];
+    }
+    else {
+        var result = fibonacci(n - 1);
+        result.push(result[result.length - 1] + result[result.length - 2]);
+        return result;
+    }
+
 };
 
 // 26. Return the Fibonacci number located at index n of the Fibonacci sequence.
